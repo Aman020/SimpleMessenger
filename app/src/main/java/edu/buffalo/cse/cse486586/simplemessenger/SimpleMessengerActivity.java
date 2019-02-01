@@ -1,5 +1,6 @@
 package edu.buffalo.cse.cse486586.simplemessenger;
 
+import java.io.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -151,11 +152,23 @@ public class SimpleMessengerActivity extends Activity {
         @Override
         protected Void doInBackground(ServerSocket... sockets) {
             ServerSocket serverSocket = sockets[0];
-            
-            /*
-             * TODO: Fill in your server code that receives messages and passes them
-             * to onProgressUpdate().
-             */
+            try {
+                /*
+                 * TODO: Fill in your server code that receives messages and passes them
+                 * to onProgressUpdate().
+                 */
+
+                while (1==1) {    // Infinite loop to keep this code running all the time
+                    Socket socket = serverSocket.accept(); // Waiting for the client for the connection
+                    DataInputStream ipStream = new DataInputStream(socket.getInputStream()); // Creating an object of datastream to read the data
+                    publishProgress(ipStream.readUTF()); // Send the progress to onProgressUpdate function
+                    socket.close(); // Closing the socket
+                }
+            }catch (UnknownHostException e) {
+            Log.e(TAG, "ServerTask UnknownHostException"+e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, "ServerTask socket IOException "+e.getMessage());
+        }
             return null;
         }
 
@@ -214,9 +227,12 @@ public class SimpleMessengerActivity extends Activity {
                 
                 String msgToSend = msgs[0];
                 /*
+
                  * TODO: Fill in your client code that sends out a message.
                  */
-                socket.close();
+                DataOutputStream send = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
+                send.writeUTF(msgToSend);     //writeChars(msgToSend); // .writeUTF(msgToSend); // .writeUTF(msgToSend);
+                socket.close();//Closing the socket.
             } catch (UnknownHostException e) {
                 Log.e(TAG, "ClientTask UnknownHostException");
             } catch (IOException e) {
