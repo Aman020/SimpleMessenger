@@ -148,21 +148,32 @@ public class SimpleMessengerActivity extends Activity {
      *
      */
     private class ServerTask extends AsyncTask<ServerSocket, String, Void> {
-
+        Socket socket = null;
         @Override
         protected Void doInBackground(ServerSocket... sockets) {
             ServerSocket serverSocket = sockets[0];
-            try {
+            try   {
                 /*
                  * TODO: Fill in your server code that receives messages and passes them
                  * to onProgressUpdate().
                  */
 
                 while (1==1) {    // Infinite loop to keep this code running all the time
-                    Socket socket = serverSocket.accept(); // Waiting for the client for the connection
-                    DataInputStream ipStream = new DataInputStream(socket.getInputStream()); // Creating an object of datastream to read the data
-                    publishProgress(ipStream.readUTF()); // Send the progress to onProgressUpdate function
-                    socket.close(); // Closing the socket
+                    socket = serverSocket.accept(); // Waiting for the client for the connection
+                 //  DataInputStream ipStream = new DataInputStream(socket.getInputStream());
+                    BufferedInputStream buffStream = new BufferedInputStream(socket.getInputStream());
+                    StringBuilder sb = new StringBuilder();
+                    int res =0;
+                    while((res = buffStream.read()) != -1 ) {
+                        sb.append((char) res);
+                    }
+
+                        // Creating an object of datastream to read the data
+
+                        publishProgress(sb.toString());
+                        // publishProgress(ipStream.readUTF()); // Send the progress to onProgressUpdate function
+
+                        socket.close(); // Closing the socket
                 }
             }catch (UnknownHostException e) {
             Log.e(TAG, "ServerTask UnknownHostException"+e.getMessage());
@@ -230,8 +241,8 @@ public class SimpleMessengerActivity extends Activity {
 
                  * TODO: Fill in your client code that sends out a message.
                  */
-                DataOutputStream send = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
-                send.writeUTF(msgToSend);     //writeChars(msgToSend); // .writeUTF(msgToSend); // .writeUTF(msgToSend);
+                DataOutputStream toSend = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
+                toSend.writeUTF(msgToSend);     //writeChars(msgToSend); // // .writeUTF(msgToSend);
                 socket.close();//Closing the socket.
             } catch (UnknownHostException e) {
                 Log.e(TAG, "ClientTask UnknownHostException");
