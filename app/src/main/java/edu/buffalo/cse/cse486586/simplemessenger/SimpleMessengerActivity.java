@@ -160,7 +160,6 @@ public class SimpleMessengerActivity extends Activity {
 
                 while (1==1) {    // Infinite loop to keep this code running all the time
                     socket = serverSocket.accept(); // Waiting for the client for the connection
-                 //  DataInputStream ipStream = new DataInputStream(socket.getInputStream());
                     BufferedInputStream buffStream = new BufferedInputStream(socket.getInputStream());
                     StringBuilder sb = new StringBuilder();
                     int res =0;
@@ -168,11 +167,8 @@ public class SimpleMessengerActivity extends Activity {
                         sb.append((char) res);
                     }
 
-                        // Creating an object of datastream to read the data
 
-                        publishProgress(sb.toString());
-                        // publishProgress(ipStream.readUTF()); // Send the progress to onProgressUpdate function
-
+                        publishProgress(sb.toString());// Send it th onProgressUpdate
                         socket.close(); // Closing the socket
                 }
             }catch (UnknownHostException e) {
@@ -199,7 +195,8 @@ public class SimpleMessengerActivity extends Activity {
              * For more information on file I/O on Android, please take a look at
              * http://developer.android.com/training/basics/data-storage/files.html
              */
-            
+
+            // Why are we creating a file?
             String filename = "SimpleMessengerOutput";
             String string = strReceived + "\n";
             FileOutputStream outputStream;
@@ -241,6 +238,10 @@ public class SimpleMessengerActivity extends Activity {
 
                  * TODO: Fill in your client code that sends out a message.
                  */
+                //PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                //out.print(msgToSend);
+                //BufferedOutputStream toSend = new BufferedOutputStream(socket.getOutputStream());
+                //toSend.write( msgToSend.getBytes(),0,msgToSend.getBytes().length);
                 DataOutputStream toSend = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
                 toSend.writeUTF(msgToSend);     //writeChars(msgToSend); // // .writeUTF(msgToSend);
                 socket.close();//Closing the socket.
