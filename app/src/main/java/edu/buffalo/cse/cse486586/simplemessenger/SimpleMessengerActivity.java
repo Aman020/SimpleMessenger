@@ -158,7 +158,7 @@ public class SimpleMessengerActivity extends Activity {
                  * to onProgressUpdate().
                  */
 
-                while (1==1) {    // Infinite loop to keep this code running all the time
+                while (true) {    // Infinite loop to keep this code running all the time
                     socket = serverSocket.accept(); // Waiting for the client for the connection
                     BufferedInputStream buffStream = new BufferedInputStream(socket.getInputStream());
                     StringBuilder sb = new StringBuilder();
