@@ -156,25 +156,40 @@ public class SimpleMessengerActivity extends Activity {
                 /*
                  * TODO: Fill in your server code that receives messages and passes them
                  * to onProgressUpdate().
+                 *
+                 *
+                 * References-
+                 * 1. https://developer.android.com/reference/android/os/AsyncTask -- I learnt the basic concepts of AsyncTask and various other functions like doInBackground,onProgressUpdate,publishProgress etc.
+                 * 2. https://developer.android.com/guide/ - I read about Android from this link.
+                 * 3.
                  */
 
                 while (true) {    // Infinite loop to keep this code running all the time
+
+                    /* Reading the data from the socket can be done by creating object of any byte/character stream. socket.getInputStream() returns an object of inputstream so it has to be wrapped in InputStreamReader in order to use character stream  */
                     socket = serverSocket.accept(); // Waiting for the client for the connection
+                    Log.i("Sockets- \t","Socket is accepting now");
                     BufferedInputStream buffStream = new BufferedInputStream(socket.getInputStream());
+                    //BufferedReader reader = new BufferedReader(new InputStreamReader (socket.getInputStream()));
+                    //reader.readLine();
+                    //publishProgress(reader.readLine());
                     StringBuilder sb = new StringBuilder();
                     int res =0;
                     while((res = buffStream.read()) != -1 ) {
                         sb.append((char) res);
                     }
 
-
-                        publishProgress(sb.toString());// Send it th onProgressUpdate
-                        socket.close(); // Closing the socket
+                        publishProgress(sb.toString());// Calling the function onProgressUpdate.
+                        Log.i("Scokets- \t", " Closing the socket");
+                       socket.close(); // Closing the socket
                 }
             }catch (UnknownHostException e) {
             Log.e(TAG, "ServerTask UnknownHostException"+e.getMessage());
         } catch (IOException e) {
             Log.e(TAG, "ServerTask socket IOException "+e.getMessage());
+        }
+        catch (Exception ex){
+                ex.printStackTrace();
         }
             return null;
         }
@@ -196,7 +211,7 @@ public class SimpleMessengerActivity extends Activity {
              * http://developer.android.com/training/basics/data-storage/files.html
              */
 
-            // Why are we creating a file?
+
             String filename = "SimpleMessengerOutput";
             String string = strReceived + "\n";
             FileOutputStream outputStream;
@@ -238,13 +253,17 @@ public class SimpleMessengerActivity extends Activity {
 
                  * TODO: Fill in your client code that sends out a message.
                  */
-                //PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+                //PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
                 //out.print(msgToSend);
-                //BufferedOutputStream toSend = new BufferedOutputStream(socket.getOutputStream());
-                //toSend.write( msgToSend.getBytes(),0,msgToSend.getBytes().length);
-                DataOutputStream toSend = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
-                toSend.writeUTF(msgToSend);     //writeChars(msgToSend); // // .writeUTF(msgToSend);
-                socket.close();//Closing the socket.
+                //out.close();
+                BufferedOutputStream toSend = new BufferedOutputStream(socket.getOutputStream());
+                toSend.write ( msgToSend.getBytes()); // Converting string in bytes
+                toSend.flush();
+                //DataOutputStream toSend = new DataOutputStream(socket.getOutputStream()); // Creating an object of DataOutputStream
+                //toSend.writeUTF(msgToSend);     //writeChars(msgToSend); // // .writeUTF(msgToSend);
+                 socket.close();//Closing the socket.
+                Log.i("Scokets- \t", " Closing the socket");
             } catch (UnknownHostException e) {
                 Log.e(TAG, "ClientTask UnknownHostException");
             } catch (IOException e) {
